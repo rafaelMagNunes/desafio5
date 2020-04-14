@@ -8,8 +8,22 @@ class CreateTransactionService {
     this.transactionsRepository = transactionsRepository;
   }
 
-  public execute(): Transaction {
-    // TODO
+  public execute(
+    title: string,
+    value: number,
+    type: 'income' | 'outcome',
+  ): Transaction {
+    const balance = this.transactionsRepository.getBalance();
+
+    if (type === 'outcome') {
+      if (value > balance.total) {
+        throw new Error('Invalid transaction amount');
+      }
+    }
+
+    const transaction = this.transactionsRepository.create(title, value, type);
+
+    return transaction;
   }
 }
 
